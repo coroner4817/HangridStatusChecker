@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="RippleButton">
+        <attr name="rb_color_good" format="color" />
+        <attr name="rb_color_bad" format="color" />
+        <attr name="rb_color_no" format="color" />
+        <attr name="rb_ripple_width_1" format="dimension" />
+        <attr name="rb_ripple_width_2" format="dimension" />
+        <attr name="normal_src" format="reference" />
+        <attr name="error_src" format="reference" />
+        <attr name="nostatus_src" format="reference" />
+    </declare-styleable>
+</resources>
