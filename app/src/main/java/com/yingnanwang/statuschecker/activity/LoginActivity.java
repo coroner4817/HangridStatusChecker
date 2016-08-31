@@ -1,9 +1,11 @@
 package com.yingnanwang.statuschecker.activity;
 
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.ProgressDialog;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -18,6 +20,7 @@ import butterknife.Bind;
 import cn.refactor.library.SmoothCheckBox;
 
 import com.yingnanwang.statuschecker.R;
+import com.yingnanwang.statuschecker.util.SocketService;
 
 /**
  * Created by YingnanWang on 8/5/16.
@@ -31,6 +34,8 @@ public class LoginActivity extends BaseActivity {
     @Bind(R.id.btn_login) Button _loginButton;
     @Bind(R.id.login_checkbox) SmoothCheckBox mCheckbox;
 
+    @Bind(R.id.login_test_btn) Button _Test_btn;
+
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
     private Animation mBtnShake;
@@ -40,6 +45,8 @@ public class LoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+
+        SocketService.actionStart(getBaseActivityContext(), getResources().getString(R.string.ip_addr), getResources().getInteger(R.integer.ip_port));
 
         pref = PreferenceManager.getDefaultSharedPreferences(this);
         Boolean isRemember = pref.getBoolean("remember_login", false);
@@ -61,7 +68,7 @@ public class LoginActivity extends BaseActivity {
         _usernameText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN&& keyCode == KeyEvent.KEYCODE_ENTER) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                     login();
                 }
                 return false;
@@ -75,6 +82,30 @@ public class LoginActivity extends BaseActivity {
                     login();
                 }
                 return false;
+            }
+        });
+
+        _Test_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AsyncTask<String, Integer, String>(){
+                    @Override
+                    protected String doInBackground(String... params) {
+                        if(mBinder!=null){
+                            return mBinder.sendRequest(params[0]);
+                        }else{
+                            return null;
+                        }
+                    }
+                    @Override
+                    protected void onPostExecute(String s) {
+                        if(s!=null){
+                            Log.i(TAG, "Request Recv: "+s);
+                        }else{
+                            Log.i(TAG, "Request Recv: " + "ERROR!");
+                        }
+                    }
+                }.execute("send request");
             }
         });
     }

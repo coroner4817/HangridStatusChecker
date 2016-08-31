@@ -28,6 +28,10 @@ public class BreathButton extends View {
     private static final int RIPPLE_ALPHA = 75;
     private static final int PRESSED_COLOR_CHANGE = 255 / 25;
 
+    public static final int NOSTATUS_STATUS = 0;
+    public static final int NORMAL_STATUS = 1;
+    public static final int ERROR_STATUS = 2;
+
     private int status = 0;
 
     private int colorNormal;
@@ -106,7 +110,7 @@ public class BreathButton extends View {
             pressedAnimator.end();
         }
 
-        status = 0;
+        status = NOSTATUS_STATUS;
         setColor(colorNoStatus);
         currentColor = colorNoStatus;
     }
@@ -116,7 +120,7 @@ public class BreathButton extends View {
             pressedAnimator.end();
         }
 
-        status = 1;
+        status = NORMAL_STATUS;
         setColor(colorNormal);
         currentColor = colorNormal;
 
@@ -131,7 +135,7 @@ public class BreathButton extends View {
             pressedAnimator.end();
         }
 
-        status = 2;
+        status = ERROR_STATUS;
         setColor(colorError);
         currentColor = colorError;
 
@@ -186,7 +190,7 @@ public class BreathButton extends View {
     }
 
     private float animationRipple2(float prog){
-        if(status == 1){
+        if(status == NORMAL_STATUS){
             if(prog < 2){
                 return 0;
             } else if(2 <= prog && prog < 6){
@@ -196,7 +200,7 @@ public class BreathButton extends View {
             }else{
                 return 0;
             }
-        }else if(status == 2){
+        }else if(status == ERROR_STATUS){
             if(prog < 3){
                 return 0;
             }else if(3 <= prog && prog < 4){
@@ -225,7 +229,7 @@ public class BreathButton extends View {
 
         canvas.drawCircle(centerX, centerY, centerCircleRadius, circlePaint);
 
-        if(status == 0){
+        if(status == NOSTATUS_STATUS){
             bitmapDrawLeft = (canvas.getWidth() - nostatus_img.getWidth()) >> 1;
             bitmapDrawTop = (canvas.getHeight() - nostatus_img.getHeight()) >> 1;
             canvas.drawBitmap(nostatus_img, bitmapDrawLeft, bitmapDrawTop, bitmapPaint);

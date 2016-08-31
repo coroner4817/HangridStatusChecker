@@ -99,4 +99,12 @@
             android:background="@color/fb_blue"/>
 
     </LinearLayout>
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Test Send Request"
+        android:id="@+id/login_test_btn"
+        android:layout_alignParentBottom="true"/>
 </RelativeLayout>

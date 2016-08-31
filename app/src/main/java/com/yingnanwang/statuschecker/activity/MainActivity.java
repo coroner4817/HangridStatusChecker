@@ -3,6 +3,8 @@ package com.yingnanwang.statuschecker.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -10,6 +12,7 @@ import android.widget.Toast;
 
 import com.andexert.library.RippleView;
 import com.yingnanwang.statuschecker.R;
+import com.yingnanwang.statuschecker.util.SocketService;
 import com.yingnanwang.statuschecker.widget.BreathButton;
 
 import butterknife.ButterKnife;
@@ -38,32 +41,28 @@ public class MainActivity extends BaseActivity {
         context.startActivity(intent);
     }
 
+    private Handler anim_handler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case BreathButton.NOSTATUS_STATUS:
+                    mBreathBtn.noStatusAnim();
+                    break;
+                case BreathButton.NORMAL_STATUS:
+                    mBreathBtn.normalAnim();
+                    break;
+                case BreathButton.ERROR_STATUS:
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
-        normal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mBreathBtn.normalAnim();
-            }
-        });
-
-        error.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mBreathBtn.errorAnim();
-            }
-        });
-
-        nostatus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mBreathBtn.noStatusAnim();
-            }
-        });
 
         mRippleView.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
 
@@ -78,6 +77,21 @@ public class MainActivity extends BaseActivity {
 
         });
 
+        setBaseActivityCallBackListener(new BaseActivityCallBackListener() {
+            @Override
+            public void BaseActivity_onConnected() {
+                Message message = new Message();
+                message.what = BreathButton.NORMAL_STATUS;
+                anim_handler.sendMessage(message);
+            }
+
+            @Override
+            public void BaseActivity_onDisConnected() {
+                Message message = new Message();
+                message.what = BreathButton.NOSTATUS_STATUS;
+                anim_handler.sendMessage(message);
+            }
+        });
     }
 
     @Override
